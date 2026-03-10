@@ -23,6 +23,6 @@ const authService: IAuthService = new AuthService(userRepository);
 const authController = new AuthController(authService);
 
 // Registering routes
-app.use('/api/v1', authController.getRouter());
+app.use('/api', authController.getRouter());
 
 export default app;

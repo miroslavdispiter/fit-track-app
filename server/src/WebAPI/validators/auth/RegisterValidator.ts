@@ -1,21 +1,21 @@
-import { RezultatValidacije } from '../../../Domain/types/ValidationResult';
+import { ValidationResult } from '../../../Domain/types/ValidationResult';
 
-export function validacijaPodatakaAuth(korisnickoIme?: string, lozinka?: string): RezultatValidacije {
-  if (!korisnickoIme || !lozinka) {
-    return { uspesno: false, poruka: 'Korisničko ime i lozinka su obavezni.' };
+export function dataValidationAuth(username?: string, password?: string): ValidationResult {
+  if (!username || !password) {
+    return { success: false, message: 'Username and password are required.' };
   }
 
-  if (korisnickoIme.length < 3) {
-    return { uspesno: false, poruka: 'Korisničko ime mora imati najmanje 3 karaktera.' };
+  if (username.length < 3) {
+    return { success: false, message: 'Username must have at least 3 characters.' };
   }
 
-  if (lozinka.length < 6) {
-    return { uspesno: false, poruka: 'Lozinka mora imati najmanje 6 karaktera.' };
+  if (password.length < 6) {
+    return { success: false, message: 'Password must be at least 6 characters long.' };
   }
 
-  if (lozinka.length > 20) {
-    return { uspesno: false, poruka: 'Lozinka može imati najviše 20 karaktera.' };
+  if (password.length > 20) {
+    return { success: false, message: 'Password cannot exceed 20 characters.' };
   }
 
-  return { uspesno: true };
+  return { success: true };
 }

@@ -1,55 +1,55 @@
 import { User } from "../../models/User";
 
 /**
- * Repository interface za upravljanje korisnicima
- * Definiše operacije za rad sa korisnicima u bazi podataka
+ * Repository interface for user management
+ * Defines operations for working with users in the database
  */
 export interface IUserRepository {
   /**
-   * Kreira novog korisnika u bazi podataka
-   * @param user - Objekat korisnika za kreiranje
-   * @returns Promise koji vraća kreiranog korisnika sa dodeljenim ID-om ili prazan objekat
+   * Creates a new user in the database
+   * @param user - The user object to create
+   * @returns Promise that returns the created user with the assigned id or an empty object
    */
   create(user: User): Promise<User>;
 
   /**
-   * Pronalazi korisnika po ID-u
-   * @param id - Jedinstveni identifikator korisnika
-   * @returns Vraća korisnika ili prazan objekat ako nije pronađen
+   * Finds user by ID
+   * @param id - The user's unique identifier
+   * @returns Returns the user or an empty object if not found
    */
   getById(id: number): Promise<User>;
 
   /**
-   * Pronalazi korisnika po korisničkom imenu
-   * @param korisnickoIme - Korisničko ime za pretragu
-   * @returns Promise koji vraća korisnika ili prazan objekat ako nije pronađen
+   * Finds a user by username
+   * @param username - Username to search
+   * @returns Promise that returns the user or an empty object if not found
    */
-  getByUsername(korisnickoIme: string): Promise<User>;
+  getByUsername(username: string): Promise<User>;
 
   /**
-   * Vraća sve korisnike iz baze podataka
-   * @returns Promise koji vraća niz svih korisnika
+   * Returns all users from the database
+   * @returns Promise that returns an array of all users
    */
   getAll(): Promise<User[]>;
 
   /**
-   * Ažurira postojećeg korisnika
-   * @param user - Objekat korisnika sa ažuriranim podacima
-   * @returns Promise koji vraća ažuriranog korisnika ili prazan objekat ako ažuriranje nije uspešno
+   * Updates an existing user
+   * @param user - User object with updated data
+   * @returns Promise that returns the updated user or an empty object if the update was not successful
    */
   update(user: User): Promise<User>;
 
   /**
-   * Briše korisnika iz baze podataka
-   * @param id - ID korisnika za brisanje
-   * @returns Promise koji vraća true ako je brisanje uspešno, false inače
+   * Deletes the user from the database
+   * @param id - ID of the user to delete
+   * @returns Promise that returns true if the deletion is successful, false otherwise
    */
   delete(id: number): Promise<boolean>;
 
   /**
-   * Proverava da li korisnik postoji u bazi podataka
-   * @param id - ID korisnika za proveru
-   * @returns Promise koji vraća true ako korisnik postoji, false inače
+   * Checks if the user exists in the database
+   * @param id - ID of the user to check
+   * @returns Promise that returns true if the user exists, false otherwise
    */
   exists(id: number): Promise<boolean>;
 }

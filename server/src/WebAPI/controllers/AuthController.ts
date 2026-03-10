@@ -1,6 +1,6 @@
 import { Request, Response, Router } from 'express';
 import { IAuthService } from '../../Domain/services/auth/IAuthService';
-import { validacijaPodatakaAuth } from '../validators/auth/RegisterValidator';
+import { dataValidationAuth } from '../validators/auth/RegisterValidator';
 
 export class AuthController {
   private router: Router;
@@ -13,34 +13,34 @@ export class AuthController {
   }
 
   private initializeRoutes(): void {
-    this.router.post('/auth/login', this.prijava.bind(this));
-    this.router.post('/auth/register', this.registracija.bind(this));
+    this.router.post('/auth/login', this.login.bind(this));
+    this.router.post('/auth/register', this.register.bind(this));
   }
 
   /**
-   * POST /api/v1/auth/login
-   * Prijava korisnika
+   * POST /api/auth/login
+   * User Login
    */
-  private async prijava(req: Request, res: Response): Promise<void> {
+  private async login(req: Request, res: Response): Promise<void> {
     try {
-      const { korisnickoIme, lozinka } = req.body;
+      const { username, password } = req.body;
 
-      // Validacija input parametara
-      const rezultat = validacijaPodatakaAuth(korisnickoIme, lozinka);
+      // Validation of input parameters
+      const validationResult = dataValidationAuth(username, password);
 
-      if (!rezultat.uspesno) {
-        res.status(400).json({ success: false, message: rezultat.poruka });
+      if (!validationResult.success) {
+        res.status(400).json({ success: false, message: validationResult.message });
         return;
       }
 
-      const result = await this.authService.prijava(korisnickoIme, lozinka);
+      const result = await this.authService.login(username, password);
 
-      // Proveravamo da li je prijava uspešna
+      // Checking whether the login is successful
       if (result.id !== 0) {
-        res.status(200).json({success: true, message: 'Uspešna prijava', data: result});
+        res.status(200).json({success: true, message: 'Login Successful', data: result});
         return;
       } else {
-        res.status(401).json({success: false, message: 'Неисправно корисничко име или лозинка'});
+        res.status(401).json({success: false, message: 'Incorrect username or password'});
         return;
       }
     } catch (error) {
@@ -50,27 +50,27 @@ export class AuthController {
   }
 
   /**
-   * POST /api/v1/auth/register
-   * Registracija novog korisnika
+   * POST /api/auth/register
+   * New user Registration
    */
-  private async registracija(req: Request, res: Response): Promise<void> {
+  private async register(req: Request, res: Response): Promise<void> {
     try {
-      const { korisnickoIme, lozinka } = req.body;
+      const { username, password } = req.body;
 
-      const rezultat = validacijaPodatakaAuth(korisnickoIme, lozinka);
+      const validationResult = dataValidationAuth(username, password);
 
-      if (!rezultat.uspesno) {
-        res.status(400).json({ success: false, message: rezultat.poruka });
+      if (!validationResult.success) {
+        res.status(400).json({ success: false, message: validationResult.message });
         return;
       }
 
-      const result = await this.authService.registracija(korisnickoIme, lozinka);
+      const result = await this.authService.register(username, password);
 
-      // Proveravamo da li je registracija uspešna
+      // Checking whether the registration is successful
       if (result.id !== 0) {
-        res.status(201).json({success: true, message: 'Uspešna registracija', data: result});
+        res.status(201).json({success: true, message: 'Register successful', data: result});
       } else {
-        res.status(401).json({success: false, message: 'Регистрација није успела. Корисничко име већ постоји.', });
+        res.status(401).json({success: false, message: 'Registration failed. Username already exists', });
       }
     } catch (error) {
       res.status(500).json({success: false, message: error});
@@ -78,7 +78,7 @@ export class AuthController {
   }
 
   /**
-   * Getter za router
+   * Getter for router
    */
   public getRouter(): Router {
     return this.router;

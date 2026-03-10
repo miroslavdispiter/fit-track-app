@@ -9,34 +9,34 @@ export class AuthService implements IAuthService {
 
   public constructor(private userRepository: IUserRepository) {}
 
-  async prijava(korisnickoIme: string, lozinka: string): Promise<UserLoginDto> {
-    const user = await this.userRepository.getByUsername(korisnickoIme);
+  async login(username: string, password: string): Promise<UserLoginDto> {
+    const user = await this.userRepository.getByUsername(username);
 
-    if (user.id !== 0 && await bcrypt.compare(lozinka, user.lozinka)) {
-      return new UserLoginDto(user.id, user.korisnickoIme);
+    if (user.id !== 0 && await bcrypt.compare(password, user.password)) {
+      return new UserLoginDto(user.id, user.username);
     }
 
-    return new UserLoginDto(); // Neispravno korisničko ime ili lozinka
+    return new UserLoginDto(); // Invalid username or password
   }
 
-  async registracija(korisnickoIme: string, lozinka: string): Promise<UserLoginDto> {
-    const existingUser = await this.userRepository.getByUsername(korisnickoIme);
+  async register(username: string, password: string): Promise<UserLoginDto> {
+    const existingUser = await this.userRepository.getByUsername(username);
 
     if (existingUser.id !== 0) {
-      return new UserLoginDto(); // Korisnik već postoji
+      return new UserLoginDto(); // User already exists
     }
 
-    // Hash-ujemo lozinku pre čuvanja
-    const hashedPassword = await bcrypt.hash(lozinka, this.saltRounds);
+    // We hash the password before saving
+    const hashedPassword = await bcrypt.hash(password, this.saltRounds);
 
     const newUser = await this.userRepository.create(
-      new User(0, korisnickoIme, hashedPassword)
+      new User(0, username, hashedPassword)
     );
 
     if (newUser.id !== 0) {
-      return new UserLoginDto(newUser.id, newUser.korisnickoIme);
+      return new UserLoginDto(newUser.id, newUser.username);
     }
 
-    return new UserLoginDto(); // Registracija nije uspela
+    return new UserLoginDto(); // Registration failed
   }
 }

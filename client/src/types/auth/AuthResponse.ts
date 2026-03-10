@@ -1,7 +1,7 @@
 import type { UserLoginDto } from "../../models/auth/UserLoginDto";
 
 /**
- * Rezultat autentifikacije (prijave/registracije).
+ * Authentification result (login/register).
  */
 export interface AuthResponse {
   success: boolean;
