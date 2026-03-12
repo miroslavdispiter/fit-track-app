@@ -1,4 +1,4 @@
-import { UserLoginDto } from "../../DTOs/auth/UserLoginDto";
+import { UserAuthDataDto } from "../../DTOs/auth/UserAuthDataDto";
 
 export interface IAuthService {
     /**
@@ -7,7 +7,7 @@ export interface IAuthService {
      * @param password - The user's password.
      * @returns User's data if the login is successful, or an empty object if not.
      */
-  login(username: string, password: string): Promise<UserLoginDto>;
+  login(username: string, password: string): Promise<UserAuthDataDto>;
 
   /**
    * Registers a new user with the given username and password.
@@ -15,5 +15,5 @@ export interface IAuthService {
    * @param password - The user's password.
    * @returns User's data if registration is successful, or an empty object if not.
   */
-  register(username: string, password: string): Promise<UserLoginDto>;
+  register(username: string, password: string): Promise<UserAuthDataDto>;
 }

@@ -1,4 +1,4 @@
-import { UserLoginDto } from "../../Domain/DTOs/auth/UserLoginDto";
+import { UserAuthDataDto } from "../../Domain/DTOs/auth/UserAuthDataDto";
 import { User } from "../../Domain/models/User";
 import { IUserRepository } from "../../Domain/repositories/users/IUserRepository";
 import { IAuthService } from "../../Domain/services/auth/IAuthService";
@@ -9,21 +9,21 @@ export class AuthService implements IAuthService {
 
   public constructor(private userRepository: IUserRepository) {}
 
-  async login(username: string, password: string): Promise<UserLoginDto> {
+  async login(username: string, password: string): Promise<UserAuthDataDto> {
     const user = await this.userRepository.getByUsername(username);
 
     if (user.id !== 0 && await bcrypt.compare(password, user.password)) {
-      return new UserLoginDto(user.id, user.username);
+      return new UserAuthDataDto(user.id, user.username);
     }
 
-    return new UserLoginDto(); // Invalid username or password
+    return new UserAuthDataDto(); // Invalid username or password
   }
 
-  async register(username: string, password: string): Promise<UserLoginDto> {
+  async register(username: string, password: string): Promise<UserAuthDataDto> {
     const existingUser = await this.userRepository.getByUsername(username);
 
     if (existingUser.id !== 0) {
-      return new UserLoginDto(); // User already exists
+      return new UserAuthDataDto(); // User already exists
     }
 
     // We hash the password before saving
@@ -34,9 +34,9 @@ export class AuthService implements IAuthService {
     );
 
     if (newUser.id !== 0) {
-      return new UserLoginDto(newUser.id, newUser.username);
+      return new UserAuthDataDto(newUser.id, newUser.username);
     }
 
-    return new UserLoginDto(); // Registration failed
+    return new UserAuthDataDto(); // Registration failed
   }
 }

@@ -1,6 +1,7 @@
 import { Request, Response, Router } from 'express';
 import { IAuthService } from '../../Domain/services/auth/IAuthService';
 import { dataValidationAuth } from '../validators/auth/RegisterValidator';
+import jwt from "jsonwebtoken";
 
 export class AuthController {
   private router: Router;
@@ -37,7 +38,15 @@ export class AuthController {
 
       // Checking whether the login is successful
       if (result.id !== 0) {
-        res.status(200).json({success: true, message: 'Login Successful', data: result});
+        // Creating JWT Token
+        const token = jwt.sign(
+          {
+            id: result.id,
+            username: result.username,
+            role: result.role,
+          }, process.env.JWT_SECRET ?? "", { expiresIn: '6h' });
+
+        res.status(200).json({success: true, message: 'Login Successful', data: token});
         return;
       } else {
         res.status(401).json({success: false, message: 'Incorrect username or password'});
@@ -68,7 +77,15 @@ export class AuthController {
 
       // Checking whether the registration is successful
       if (result.id !== 0) {
-        res.status(201).json({success: true, message: 'Register successful', data: result});
+        // Creating JWT Token
+        const token = jwt.sign(
+          {
+            id: result.id,
+            username: result.username,
+            role: result.role,
+          }, process.env.JWT_SECRET ?? "", { expiresIn: '6h' });
+
+        res.status(201).json({success: true, message: 'Register successful', data: token});
       } else {
         res.status(401).json({success: false, message: 'Registration failed. Username already exists', });
       }
